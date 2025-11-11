@@ -84,6 +84,7 @@ void CargoMenuHandler::run()
             int id   = promptInt("Enter cargo index (int): ");
             int time = promptInt("Enter cargo arrival time (HHMM 0000..2359): ");
             std::string dest = promptLine("Enter destination (e.g. SIN/HKG/NRT...): ");
+            int capacity = promptInt("Enter cargo capacity (int): ");
 
             if (!isValidTime(time)) 
             {
@@ -95,7 +96,12 @@ void CargoMenuHandler::run()
                 std::cout << "Invalid destination.\n";
                 break;
             }
-            Cargo c(id, dest, time);
+            if (capacity <= 0)
+            {
+                std::cout << "Invalid capacity. Must be greater than 0.\n";
+                break;
+            }
+            Cargo c(id, dest, time, capacity);
             if (cargoList.add(c)) 
             {
                 std::cout << "Cargo added.\n";
