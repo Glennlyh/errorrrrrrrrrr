@@ -14,3 +14,10 @@ struct MatchAllPairs : MatchStrategy
 {
     std::vector<Shipment> match(const std::vector<freight>& F, const std::vector<Cargo>& C) override;
 };
+
+// Optimized matching strategy that sorts cargo and freight by arrival time
+// and minimizes the number of freights used
+struct SortedMinimalMatch : MatchStrategy 
+{
+    std::vector<Shipment> match(const std::vector<freight>& F, const std::vector<Cargo>& C) override;
+};

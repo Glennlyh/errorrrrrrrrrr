@@ -184,13 +184,14 @@ bool isWithinArrivalWindow(int freightTime, int cargoDeadline)
     int freightMinutes = (freightTime / 100) * 60 + (freightTime % 100);
     int cargoMinutes = (cargoDeadline / 100) * 60 + (cargoDeadline % 100);
 
-    // Calculate the difference in minutes
-    // Freight should arrive at or before the cargo deadline
-    int difference = cargoMinutes - freightMinutes;
+    // Calculate the difference in minutes (freight - cargo)
+    // Positive difference means freight arrives AFTER cargo deadline (late)
+    // Negative difference means freight arrives BEFORE cargo deadline (early)
+    int difference = freightMinutes - cargoMinutes;
 
     // Check if freight arrives within the acceptable window:
-    // - freight must not arrive more than 15 minutes early (difference <= 15)
-    // - freight must not arrive late (difference >= 0)
-    return difference >= 0 && difference <= 15;
+    // - freight must not arrive late (difference <= 0)
+    // - freight must not arrive more than 15 minutes early (difference >= -15)
+    return difference <= 0 && difference >= -15;
 }
 

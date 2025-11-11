@@ -1,4 +1,5 @@
 #include "GroupingStrategy.h"
+#include "Shipment.h"
 #include <algorithm>
 #include <climits>
 
@@ -30,17 +31,19 @@ static int toMinutes(int hhmm) {
             return a->getTime() < b->getTime();
         });
 
-    // for each cargo, assign it to all freights with matching des
+    // for each cargo, assign it to all freights with matching destination AND time window
     // the conversion function will handle splitting based on capacity
     for (const auto* pc : sortedCargos) 
     
     {
         int cid = pc->getIndex();
 
-        // add this cargo to all freights with same des
+        // add this cargo to all freights with same destination AND valid time window
         for (const auto* pf : sortedFreights) 
         {
-            if (pf->getDestination() == pc->getDestination()) 
+            // Check both destination and time window using Shipment.IsMatching()
+            Shipment s(*pf, *pc);
+            if (s.IsMatching()) 
             {
                 groups[pf->getIndex()].push_back(cid);
             }
@@ -101,10 +104,14 @@ static int toMinutes(int hhmm) {
         for (const auto* pc : destCargos) {
             int cid = pc->getIndex();
 
-            // add this cargo to all available freights for this des
+            // add this cargo to all available freights for this destination that meet time window
             // the splitting will be handled by convertGroupsToShipments
             for (const auto* pf : destFreights) {
-                groups[pf->getIndex()].push_back(cid);
+                // Check time window using Shipment.IsMatching()
+                Shipment s(*pf, *pc);
+                if (s.IsMatching()) {
+                    groups[pf->getIndex()].push_back(cid);
+                }
             }
         }
     }

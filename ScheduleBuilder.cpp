@@ -47,6 +47,10 @@ vector<Shipment> ScheduleBuilder::buildFromArrival(
             int cargoNeeded = cargoRemaining[cargoId];
             if (cargoNeeded <= 0) continue;
 
+            // Validate time window before creating shipment (safety check)
+            Shipment testShipment(*f, *c);
+            if (!testShipment.IsMatching()) continue;  // Skip if time window doesn't match
+
             int quantityToAssign = min(freightCapacityLeft, cargoNeeded);
             if (quantityToAssign > 0) 
             {
@@ -126,6 +130,10 @@ vector<Shipment> ScheduleBuilder::buildFromLeastFreights(
             {
                 int cargoNeeded = cargoRemaining[c->getIndex()];
                 if (cargoNeeded <= 0) continue;
+
+                // Validate time window before creating shipment
+                Shipment testShipment(*f, *c);
+                if (!testShipment.IsMatching()) continue;  // Skip if time window doesn't match
 
                 int quantityToAssign = min(freightCapacityLeft, cargoNeeded);
                 if (quantityToAssign > 0) 
